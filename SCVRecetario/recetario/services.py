@@ -1,18 +1,36 @@
 from flask import session
-from recetario.models import Receta,Ingrediente,Valoracion,Paso
+from recetario.models import Receta,vReceta,Ingrediente,vIngrediente,Valoracion,Paso
 from recetario import db
 from sqlalchemy.sql import func, or_
+
+def get_receta(idBusqueda):
+    
+    # Consigo todas la receta por id
+    receta = Receta.query.filter_by(id=idBusqueda).first()
+
+    # Consigo el promedio de las valoraciones
+    vistaReceta = vReceta()
+    avg = db.session.query(func.avg(Valoracion.puntaje).label("Punt")).group_by(Valoracion.p_receta).where(Valoracion.p_receta == receta.id).all()
+    vistaReceta.id = receta.id
+    vistaReceta.nombre = receta.nombre
+    vistaReceta.promedio = str(avg[0].Punt)
+    
+    return vistaReceta
 
 def get_allrecetas():
     
     # Consigo todas las recetas
     all_recetas = Receta.query.all()
-    resultados = {}
+    resultados = []
 
     # Itero entre las recetas y por cada una consigo el promedio de las valoraciones
     for receta in all_recetas:
-        promedio = db.session.query(func.avg(Valoracion.puntaje).label("Punt")).group_by(Valoracion.p_receta).where(Valoracion.p_receta == receta.id).all()
-        resultados[receta.nombre] = str(promedio[0].Punt)
+        vistaReceta = vReceta()
+        avg = db.session.query(func.avg(Valoracion.puntaje).label("Punt")).group_by(Valoracion.p_receta).where(Valoracion.p_receta == receta.id).all()
+        vistaReceta.id = receta.id
+        vistaReceta.nombre = receta.nombre
+        vistaReceta.promedio = str(avg[0].Punt)
+        resultados.append(vistaReceta)
     return resultados
 
 def get_search_recetas(searchParam):
@@ -30,25 +48,24 @@ def get_search_recetas(searchParam):
         resultados[receta.nombre] = str(promedio[0].Punt)
     return resultados
 
-def get_ingredientes_pax(searchNombre,pax):
+def get_ingredientes_pax(idBusqueda,pax):
 
-    # Consigo la receta por nombre
-    objetivo = Receta.query.filter_by(nombre=searchNombre).first()
+    # Consigo la receta por id
+    objetivo = Receta.query.filter_by(id=idBusqueda).first()
     ingredientes = objetivo.get_ingredientes()
-    resultados = {}
+    resultados = []
 
     for ingrediente in ingredientes:
-        resultados[ingrediente.nombre] = str(ingrediente.cantidad * int(pax)) + " " + str(ingrediente.unidad)
+        vistaIngrediente = vIngrediente()
+        vistaIngrediente.nombre = ingrediente.nombre
+        vistaIngrediente.cantidad = ingrediente.cantidad * int(pax)
+        vistaIngrediente.unidad = ingrediente.unidad
+        resultados.append(vistaIngrediente)
     
     return resultados
 
-def get_pasos(searchNombre):
-    # Consigo la receta por nombre
-    objetivo = Receta.query.filter_by(nombre=searchNombre).first()
+def get_pasos(idBusqueda):
+    # Consigo la receta por id
+    objetivo = Receta.query.filter_by(id=idBusqueda).first()
     pasos = objetivo.get_pasos()
-    resultados = {}
-
-    for paso in pasos:
-        resultados[paso.descripcion] = ""
-
-    return resultados
+    return pasos

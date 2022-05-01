@@ -1,3 +1,4 @@
+import string
 from recetario import db
 
 class Receta(db.Model):
@@ -10,6 +11,20 @@ class Receta(db.Model):
     def __repr__(self):
         return f'Receta {self.nombre}'
 
+    def get_ingredientes(self):
+        return self.ingredientes
+    
+    def get_valoraciones(self):
+        return self.valoraciones
+
+    def get_pasos(self):
+        return self.pasos
+
+class vReceta():
+    id = int
+    nombre = string
+    promedio = float
+
 class Ingrediente(db.Model):
     id = db.Column(db.Integer(), primary_key=True)
     nombre = db.Column(db.String(length=30), nullable=False) 
@@ -18,7 +33,13 @@ class Ingrediente(db.Model):
     p_receta = db.Column(db.Integer(), db.ForeignKey('receta.id'))
 
     def __repr__(self):
-        return f'Ingrediente {self.nombre}'
+        return f'{self.nombre}'
+
+class vIngrediente():
+    id = int
+    nombre = string
+    cantidad = float
+    unidad = string
 
 class Valoracion(db.Model):
     id = db.Column(db.Integer(), primary_key=True)
@@ -34,5 +55,5 @@ class Paso(db.Model):
     p_receta = db.Column(db.Integer(), db.ForeignKey('receta.id'))
 
     def __repr__(self):
-        return f'Paso {self.descripcion}'
+        return f'{self.descripcion}'
 
