@@ -1,4 +1,6 @@
 from flask import session
+from numpy import empty
+from sqlalchemy import null
 from recetario.models import Receta,vReceta,Ingrediente,vIngrediente,Valoracion,Paso
 from recetario import db
 from sqlalchemy.sql import func, or_
@@ -13,7 +15,10 @@ def get_receta(idBusqueda):
     avg = db.session.query(func.avg(Valoracion.puntaje).label("Punt")).group_by(Valoracion.p_receta).where(Valoracion.p_receta == receta.id).all()
     vistaReceta.id = receta.id
     vistaReceta.nombre = receta.nombre
-    vistaReceta.promedio = str(avg[0].Punt)
+    if avg is None:
+        vistaReceta.promedio = 0
+    else:
+        vistaReceta.promedio = str(avg[0].Punt)
     
     return vistaReceta
 
@@ -29,7 +34,10 @@ def get_allrecetas():
         avg = db.session.query(func.avg(Valoracion.puntaje).label("Punt")).group_by(Valoracion.p_receta).where(Valoracion.p_receta == receta.id).all()
         vistaReceta.id = receta.id
         vistaReceta.nombre = receta.nombre
-        vistaReceta.promedio = str(avg[0].Punt)
+        if avg == null:
+            vistaReceta.promedio = 0
+        else:
+            vistaReceta.promedio = str(avg[0].Punt)
         resultados.append(vistaReceta)
     return resultados
 
@@ -69,3 +77,19 @@ def get_pasos(idBusqueda):
     objetivo = Receta.query.filter_by(id=idBusqueda).first()
     pasos = objetivo.get_pasos()
     return pasos
+
+def get_ranking():
+    resultados = get_allrecetas()
+
+    listaAsc = sorted(resultados, key=lambda x: x.promedio, reverse=True)
+    listaDes = sorted(resultados, key=lambda x: x.promedio)
+
+    return listaAsc,listaDes
+
+def set_valoracionReceta(idreceta,valorUsuario):
+    nuevaValoracion = Valoracion()
+    nuevaValoracion.puntaje = valorUsuario
+    nuevaValoracion.p_receta = idreceta
+    db.session.add(nuevaValoracion)
+    db.session.commit()
+    return 0

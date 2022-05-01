@@ -46,7 +46,24 @@
             </table>
         </div>
       </div>
-
     </div>
 </div>
+
+<form action="{{ url_for('guardarValoracion') }}" method="post">   
+    <div class="row" style="margin-top:20px;margin-left:20px">
+        <div class="col-4">
+            Asignar una valoración del 1 al 5
+        </div>
+        <div class="col-4"> 
+            <select name="valorUsuario">
+                <option value="{{puntajes[0]}}" selected>{{puntajes[0]}}</option>
+                {% for puntaje in puntajes[1:] %}
+                <option value="{{puntaje}}">{{puntaje}}</option>
+                {% endfor %}
+            </select>
+            <input type="hidden" name="idreceta" value="{{receta.id}}" />
+            <button type="submit" class="btn btn-outline btn-info"> Guardar </button>
+        </div>
+    </div>
+</form>
     {% endblock %}
