@@ -1,7 +1,8 @@
 from flask import session
 from numpy import empty
 from sqlalchemy import null
-from recetario.models import Receta,vReceta,Ingrediente,vIngrediente,Valoracion,Paso
+from recetario.models import Receta,Ingrediente,Valoracion,Paso
+from recetario.views import vReceta,vIngrediente
 from recetario import db
 from sqlalchemy.sql import func, or_
 
@@ -22,38 +23,34 @@ def get_receta(idBusqueda):
     
     return vistaReceta
 
-def get_allrecetas():
-    
-    # Consigo todas las recetas
-    all_recetas = Receta.query.all()
+def get_recetas(searchParam):
+
+    # Inicializo variable resultados
     resultados = []
+    # Consigo todas las recetas si searchParam está vacío
+    if not searchParam:
+        search_recetas = Receta.query.all()
+    # Consigo todas las recetas que contengan searchParam en el nombre
+    else: 
+        search_recetas = Receta.query.filter(Receta.nombre.contains(searchParam))
+
+    # Consigo todas los ingredientes que contengan searchParam en el nombre
+    #search_ingredientes = Ingrediente.query.filter(Ingrediente.nombre.contains(searchParam))
+    #for ing in search_ingredientes:
+    #    contieneIng = Receta.query.filter_by(id = ing.p_receta)
+    #    lista.append(contieneIng)
 
     # Itero entre las recetas y por cada una consigo el promedio de las valoraciones
-    for receta in all_recetas:
+    for receta in search_recetas:
         vistaReceta = vReceta()
         avg = db.session.query(func.avg(Valoracion.puntaje).label("Punt")).group_by(Valoracion.p_receta).where(Valoracion.p_receta == receta.id).all()
         vistaReceta.id = receta.id
         vistaReceta.nombre = receta.nombre
-        if avg == null:
+        if not avg:
             vistaReceta.promedio = 0
         else:
             vistaReceta.promedio = str(avg[0].Punt)
         resultados.append(vistaReceta)
-    return resultados
-
-def get_search_recetas(searchParam):
-
-    # Consigo todas las recetas que contengan searchParam en el nombre
-    search_recetas = Receta.query.filter(Receta.nombre.contains(searchParam))
-
-    # Consigo todas los ingredientes que contengan searchParam en el nombre
-    # search_ingredientes = Ingrediente.query.filter(Ingrediente.nombre.contains(searchParam))
-    # search_ingredientes = Receta.query.filter(Receta.id in search_ingredientes.id)
-    resultados = {}
-
-    for receta in search_recetas:
-        promedio = db.session.query(func.avg(Valoracion.puntaje).label("Punt")).group_by(Valoracion.p_receta).where(Valoracion.p_receta == receta.id).all()
-        resultados[receta.nombre] = str(promedio[0].Punt)
     return resultados
 
 def get_ingredientes_pax(idBusqueda,pax):
@@ -79,7 +76,7 @@ def get_pasos(idBusqueda):
     return pasos
 
 def get_ranking():
-    resultados = get_allrecetas()
+    resultados = get_recetas("")
 
     listaAsc = sorted(resultados, key=lambda x: x.promedio, reverse=True)
     listaDes = sorted(resultados, key=lambda x: x.promedio)

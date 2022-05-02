@@ -8,3 +8,4 @@ db = SQLAlchemy(app)
 from recetario import routes
 from recetario import models
 from recetario import services
+from recetario import views

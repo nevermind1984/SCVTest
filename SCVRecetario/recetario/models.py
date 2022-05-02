@@ -20,11 +20,6 @@ class Receta(db.Model):
     def get_pasos(self):
         return self.pasos
 
-class vReceta():
-    id = int
-    nombre = string
-    promedio = float
-
 class Ingrediente(db.Model):
     id = db.Column(db.Integer(), primary_key=True)
     nombre = db.Column(db.String(length=30), nullable=False) 
@@ -34,12 +29,6 @@ class Ingrediente(db.Model):
 
     def __repr__(self):
         return f'{self.nombre}'
-
-class vIngrediente():
-    id = int
-    nombre = string
-    cantidad = float
-    unidad = string
 
 class Valoracion(db.Model):
     id = db.Column(db.Integer(), primary_key=True)

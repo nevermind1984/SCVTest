@@ -5,15 +5,16 @@ from flask import jsonify, render_template, request, redirect, url_for
 
 
 @app.route('/')
-@app.route('/recetario')
+@app.route('/recetario', methods=['GET'])
 def recetario():
-    recetas = services.get_allrecetas()
+    stringBusqueda = request.args.get('busqueda')
+    recetas = services.get_recetas(stringBusqueda)
     return render_template('recetario.html', recetas = recetas)
 
 @app.route('/receta', methods=['GET'])
 def receta():
-    # Procesos los parametros
-    idBusqueda = request.args.get('idBusqueda')
+    # Proceso los parametros
+    idBusqueda = request.args.get('idreceta')
     pax = request.args.get('pax')
     if pax is None:
         pax = 1
@@ -31,12 +32,6 @@ def receta():
 def ranking():
     listaAsc,listaDes = services.get_ranking()
     return render_template('ranking.html', listaAsc = listaAsc ,listaDes = listaDes )
-
-@app.route('/search', methods=['GET'])
-def search():
-    idBusqueda = request.args.get('searchParam')
-    receta = services.get_allreceta(idBusqueda)
-    return render_template('recetario.html')
 
 @app.route('/guardarValoracion', methods=['POST'])
 def guardarValoracion():

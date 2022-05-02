@@ -13,21 +13,22 @@
     <br>
 
     <div class="row">
-        <div class="col-8">  
-            <input class="form-control" name="busqueda" placeholder="Busque su receta" autocomplete="off" autofocus="autofocus" type="text">    
-        </div>
-        <div class="col-4">
-            <button class="btn btn-outline btn-info"> Buscar </button>
-        </div>
-    <p></p>
+        <form class="form-inline" action="{{ url_for('recetario') }}">
+            <div class="col-8"> 
+                <input class="form-control" name="busqueda" placeholder="Busque su receta" autocomplete="off" autofocus="autofocus" type="text">    
+            </div>
+            <div class="col-4">
+                <button class="btn btn-outline btn-info"> Buscar </button>
+            </div>
+        </form>               
     </div>
+    <br/>
 
     <div> 
-    <p></p> 
     <a href="{{ url_for('ranking') }}">Ver Valoraciones</a>
-    <p></p> 
+    <br/> 
     </div>
-
+    <br/>
     <table class="table table-hover table-dark">
         <thead>
             <tr>    
@@ -39,7 +40,7 @@
             {% for receta in recetas %}
                 <tr>    
                     <td> 
-                        <a href="/receta?idBusqueda={{receta.id}}">{{receta.nombre}}</a>
+                        <a href="/receta?idreceta={{receta.id}}">{{receta.nombre}}</a>
                     </td>
                     <td>{{receta.promedio}}</td>
                 </tr>
