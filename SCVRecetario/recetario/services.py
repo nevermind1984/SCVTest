@@ -33,12 +33,12 @@ def get_recetas(searchParam):
     # Consigo todas las recetas que contengan searchParam en el nombre
     else: 
         search_recetas = Receta.query.filter(Receta.nombre.contains(searchParam))
-
-    # Consigo todas los ingredientes que contengan searchParam en el nombre
-    #search_ingredientes = Ingrediente.query.filter(Ingrediente.nombre.contains(searchParam))
+        # Consigo todas los ingredientes que contengan searchParam en el nombre
+        #search_ingredientes = Ingrediente.query.filter(Ingrediente.nombre.contains(searchParam))
+    
     #for ing in search_ingredientes:
-    #    contieneIng = Receta.query.filter_by(id = ing.p_receta)
-    #    lista.append(contieneIng)
+        #contieneIng = Receta.query.filter_by(id = ing.p_receta).first()
+        #search_recetas.append(contieneIng)
 
     # Itero entre las recetas y por cada una consigo el promedio de las valoraciones
     for receta in search_recetas:

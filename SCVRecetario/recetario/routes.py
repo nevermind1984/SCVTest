@@ -16,7 +16,7 @@ def receta():
     # Proceso los parametros
     idBusqueda = request.args.get('idreceta')
     pax = request.args.get('pax')
-    if pax is None:
+    if not pax:
         pax = 1
     # Traigo la receta pedida
     receta = services.get_receta(idBusqueda)
