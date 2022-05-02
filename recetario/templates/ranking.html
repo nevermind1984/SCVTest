@@ -1,0 +1,78 @@
+{% extends 'base.html' %}
+
+{% block title %}
+    Valoraciones
+{% endblock %}
+
+{% block content %}
+
+<div class="row" style="margin-top:20px;margin-left:20px">
+    <div class="col-6">
+
+    <div class="row">
+        <div class="col-6">  
+
+    <ul class="nav nav-tabs" id="myTab" role="tablist">
+        <li class="nav-item">
+          <a class="nav-link active" id="home-tab" data-toggle="tab" href="#mejorreceta" role="tab" aria-controls="home" aria-selected="true">Mejores Recetas</a>
+        </li>
+         <li class="nav-item">
+          <a class="nav-link" id="peorreceta-tab" data-toggle="tab" href="#peorreceta" role="tab" aria-controls="contact" aria-selected="false">Peores Recetas</a>
+        </li>
+      </ul>
+      <div class="tab-content" id="myTabContent">
+        <div class="tab-pane fade show active" id="mejorreceta" role="tabpanel" aria-labelledby="home-tab">
+
+            <table class="table table-hover table-dark">
+                <tbody>
+                    <table class="table table-hover table-dark">
+                        <thead>
+                            <tr>    
+                                <th scope="col">Receta</th>
+                                <th scope="col">Puntaje</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for receta in listaAsc %}
+                                <tr>    
+                                    <td> 
+                                        <a href="/receta?idBusqueda={{receta.id}}">{{receta.nombre}}</a>
+                                    </td>
+                                    <td>{{receta.promedio}}</td>
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+
+                </tbody>
+            </table>
+        </div>
+        <div class="tab-pane fade" id="peorreceta" role="tabpanel" aria-labelledby="profile-tab">
+            <table class="table table-hover table-dark">
+                <tbody>
+                    <table class="table table-hover table-dark">
+                        <thead>
+                            <tr>    
+                                <th scope="col">Receta</th>
+                                <th scope="col">Puntaje</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for receta in listaDes %}
+                                <tr>    
+                                    <td> 
+                                        <a href="/receta?idBusqueda={{receta.id}}">{{receta.nombre}}</a>
+                                    </td>
+                                    <td>{{receta.promedio}}</td>
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </tbody>
+            </table>
+        </div>
+      </div>
+
+    </div>
+</div>
+    {% endblock %}
